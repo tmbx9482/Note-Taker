@@ -2,9 +2,11 @@ const express = require("express")
 const apiRoutes = require("./routes/apiRoutes")
 const htmlRoutes = require("./routes/htmlRoutes")
 const path = require('path')
+const fs = require("fs")
+
 
 const app = express()
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -27,8 +29,19 @@ app.get("/api/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "db/db.json"))
 });
 
+app.post("/api/notes", function (req, res) {
+    console.log(req.body)
+    fs.writeFile("db/db.json", JSON.stringify(req.body), function (err) {
+        if (err) {
+            return
+        }
+
+        console.log("Yay")
+    })
+});
 
 
+// need to add an ID in order to get text to display
 
 app.listen(PORT, function () {
     console.log(`At listening on ${PORT}...`)
