@@ -29,28 +29,87 @@ app.get("/api/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "db/db.json"))
 });
 
-app.post("/api/notes", function (req, res) {
-    console.log(req.body);
-    let originalJsonFile = [];
-    let newNotesArry = [];
-    // fs.read db.json to a variable `originalJsonFile`
-    // if originalJsonFile is NOT empty
-    // 1.- JSON.parse file contents into an array
-    // 2.- push the new note to the array
-    // 3.- save the array back to db.json
-    fs.writeFile("db/db.json", JSON.stringify(newNotesArry), function (err) {
-        if (err) {
-            return
-        }
-
-        console.log("Yay");
-        res.send("Success");
-    })
+//default route to start page
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
+app.post("/api/notes", function (req, res) {
+    console.log(req.body);
 
-// need to add an ID in order to get text to display
+    // fs.read db.json to a variable `originalJsonFileArray`
+    fs.readFile('./db/db.json', (err, data) => {
+        if (err) {
+            console.log("fs readFile err: ", err);
+        }
 
+        let originalJsonFileArray = null;
+        let dataStr = data.toString();
+        console.log("fs readFile data: ", data);
+        console.log("fs readFile data: ", data.toString());
+
+        // if data string is NOT empty
+        if (dataStr !== "") {
+            //JSON.parse file contents into an array
+            originalJsonFileArray = JSON.parse(dataStr);
+        }
+
+        let newNote = req.body;
+        //push the new note to the array
+        originalJsonFileArray.push(newNote);
+
+        //save the array back to db.json
+        fs.writeFile("db/db.json", JSON.stringify(originalJsonFileArray), function (err) {
+            if (err) {
+                return
+            }
+            console.log("Yay");
+
+            //The function's Promises will run
+            res.send("Success");
+        });
+    });
+});
+
+app.delete("/delete/note/:id", function (req, res) {
+    let id = req.params.id;
+
+    // fs.read db.json to a variable `originalJsonFileArray`
+    fs.readFile('./db/db.json', (err, data) => {
+        if (err) {
+            console.log("fs readFile err: ", err);
+        }
+
+        let originalJsonFileArray = null;
+        let dataStr = data.toString();
+        console.log("fs readFile data: ", data);
+        console.log("fs readFile data: ", data.toString());
+
+        // if data string is NOT empty
+        if (dataStr !== "") {
+            //JSON.parse file contents into an array
+            originalJsonFileArray = JSON.parse(dataStr);
+        }
+
+        //search for matching record in the originalJsonFileArray
+        let index = originalJsonFileArray.findIndex(obj => obj.id === id);
+        //remove match from originalJsonFileArray
+        originalJsonFileArray.splice(index, 1);
+
+        //save the array back to db.json
+        fs.writeFile("db/db.json", JSON.stringify(originalJsonFileArray), function (err) {
+            if (err) {
+                return
+            }
+            console.log("Yay");
+
+            //The function's Promises will run
+            res.send("Success");
+        });
+    });
+});
+
+// allows the server to keep running
 app.listen(PORT, function () {
     console.log(`At listening on ${PORT}...`)
 })
