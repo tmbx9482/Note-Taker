@@ -50,13 +50,16 @@ const renderActiveNote = () => {
 };
 
 // Get the note data from the inputs, save it to the db and update the view
-const handleNoteSave = function () {
+const handleNoteSave = () => {
+  console.log("SAVE NOTE!");
   const newNote = {
     title: $noteTitle.val(),
     text: $noteText.val(),
+    id: Date.now()
   };
 
   saveNote(newNote).then(() => {
+    console.log("Keep track of your data!");
     getAndRenderNotes();
     renderActiveNote();
   });
@@ -128,16 +131,23 @@ const renderNoteList = (notes) => {
   }
 
   notes.forEach((note) => {
+    console.log("Keeping taking notes!");
     const $li = create$li(note.title).data(note);
+    console.log("$li: ", $li);
     noteListItems.push($li);
+    console.log("noteListItems: ", noteListItems);
   });
+
+  console.log("noteListItems: ", noteListItems);
 
   $noteList.append(noteListItems);
 };
 
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = () => {
-  return getNotes().then(renderNoteList);
+  return getNotes().then(response => {
+    renderNoteList(response);
+  });
 };
 
 $saveNoteBtn.on("click", handleNoteSave);

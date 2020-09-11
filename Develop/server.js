@@ -30,13 +30,21 @@ app.get("/api/notes", function (req, res) {
 });
 
 app.post("/api/notes", function (req, res) {
-    console.log(req.body)
-    fs.writeFile("db/db.json", JSON.stringify(req.body), function (err) {
+    console.log(req.body);
+    let originalJsonFile = [];
+    let newNotesArry = [];
+    // fs.read db.json to a variable `originalJsonFile`
+    // if originalJsonFile is NOT empty
+    // 1.- JSON.parse file contents into an array
+    // 2.- push the new note to the array
+    // 3.- save the array back to db.json
+    fs.writeFile("db/db.json", JSON.stringify(newNotesArry), function (err) {
         if (err) {
             return
         }
 
-        console.log("Yay")
+        console.log("Yay");
+        res.send("Success");
     })
 });
 
