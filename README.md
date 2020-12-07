@@ -20,5 +20,5 @@ For users that need to keep track of a lot of information, it's easy to forget o
 
 ## Deploying the App
 
-Need to take some note? ====>![NoteTaker](https://morning-chamber-77571.herokuapp.com/)
+Need to take some note? ====> [NoteTaker](https://morning-chamber-77571.herokuapp.com/)
 
